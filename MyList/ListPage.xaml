@@ -1,0 +1,83 @@
+﻿<Page
+    x:Class="MyList.ListPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyList"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" FontFamily="Segoe UI">
+
+    <Grid x:Name="ListPageGrid" Background="{ThemeResource SystemControlChromeHighAcrylicElementMediumBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="600" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SetVisibility.Visibility" 
+                                                Value="Visible"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="0" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="SetVisibility.Visibility" 
+                                                Value="Collapsed"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <TextBlock FontSize="22" 
+                   Margin="35,10,0,0" FontFamily="Segoe UI" 
+                   Text="Todo List"/>
+        <TextBlock x:Name="SetVisibility" Visibility="Collapsed"/>
+        <ListView x:Name="toDoList" HorizontalAlignment="Stretch" 
+                  ItemsSource="{x:Bind ViewModel.TodoLists}"
+                  Margin="25,25,25,0" FontFamily="Segoe UI" 
+                  IsItemClickEnabled="True" 
+                  SelectionChanged="ListSelect"
+                  ItemClick="ListClcik" Grid.Row="1">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="local:TodoList" 
+                              x:Name="toDoListItem">
+                    <RelativePanel Height="80">
+                        <CheckBox x:Name="checkBoxItem"
+                                  IsChecked="{Binding Done, Mode=TwoWay}"
+                                  MaxWidth="30" MinWidth="1" 
+                                  Margin="0,5,0,0"
+                                  VerticalAlignment="Center"
+                                  RelativePanel.AlignVerticalCenterWithPanel="True"/>
+                        <Image x:Name="ItemImage"
+                               Source="Assets/Square150x150Logo.scale-200.png"
+                               RelativePanel.RightOf="checkBoxItem"
+                               RelativePanel.AlignVerticalCenterWith="checkBoxItem"
+                               Width="40" Height="40"
+                               Visibility="{Binding Path=Visibility, ElementName=SetVisibility}" 
+                               />
+                        <Canvas Height="40"
+                                RelativePanel.RightOf="ItemImage" 
+                                RelativePanel.AlignVerticalCenterWith="ItemImage"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Title}"
+                                       Margin="0,10,0,0"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                            <Line X2="500" Y1="22" Y2="22"
+                                  Stroke="Black" StrokeThickness="2" 
+                                  Visibility="{Binding DeleteLine}" 
+                                  Stretch="Fill" 
+                                  VerticalAlignment="Center"/>
+                        </Canvas>
+                    </RelativePanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Page>
