@@ -28,11 +28,8 @@ namespace MyList {
             this.InitializeComponent();
             Current = this;
             this.IsCreateStatus = true;
-            this.Icon = new BitmapImage();
-            this.Icon.UriSource = new Uri("ms-appx:/Assets/Square150x150Logo.scale-200.png");
         }
         private Boolean isCreateStatus;
-        public BitmapImage Icon;
         
         public Boolean IsCreateStatus {
             get {
@@ -52,6 +49,7 @@ namespace MyList {
         }
 
         public void ShowDetail(int index) {
+            ImageBox.Source = MainPage.Current.ListItemsData.TodoLists[index].Icon;
             textBoxTitle.Text = MainPage.Current.ListItemsData.TodoLists[index].Title;
             textBoxDes.Text = MainPage.Current.ListItemsData.TodoLists[index].Des;
             DueDatePicker.Date = MainPage.Current.ListItemsData.TodoLists[index].DueDate;
@@ -61,8 +59,10 @@ namespace MyList {
             textBoxTitle.Text = "";
             textBoxDes.Text = "";
             DueDatePicker.Date = DateTime.Now;
-            this.Icon = new BitmapImage();
-            this.Icon.UriSource = new Uri("ms-appx:/Assets/Square150x150Logo.scale-200.png");
+            BitmapImage Icon = new BitmapImage {
+                UriSource = new Uri("ms-appx:/Assets/Square150x150Logo.scale-200.png")
+            };
+            ImageBox.Source = Icon;
         }
 
         private void SendAToast(string title, string content) {
@@ -117,7 +117,8 @@ namespace MyList {
                     MainPage.Current.ListItemsData.TodoLists.Add(new TodoList() {
                         Title = textBoxTitle.Text,
                         Des = textBoxDes.Text,
-                        DueDate = DueDatePicker.Date
+                        DueDate = DueDatePicker.Date,
+                        Icon = (BitmapImage)ImageBox.Source
                     });
                     ResetForm();
                 } else if (ListPage.Current.ItemSelected != -1) {
@@ -125,6 +126,7 @@ namespace MyList {
                     MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].Title = textBoxTitle.Text;
                     MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].Des = textBoxDes.Text;
                     MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].DueDate = DueDatePicker.Date;
+                    MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].Icon = (BitmapImage)ImageBox.Source;
                 } else {
                     SendADialog("Update Failed!", "You have to select one.");
                 }
@@ -133,10 +135,11 @@ namespace MyList {
         }
 
         private async void SelectPic_Click(object sender, RoutedEventArgs e) {
-            var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-            picker.SuggestedStartLocation =
-                Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            var picker = new Windows.Storage.Pickers.FileOpenPicker {
+                ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail,
+                SuggestedStartLocation =
+                Windows.Storage.Pickers.PickerLocationId.PicturesLibrary
+            };
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");

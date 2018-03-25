@@ -20,7 +20,7 @@
                 <RowDefinition Height="80"/>
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="titleBlock" FontSize="22" Margin="20,0,0,0">Add a item</TextBlock>
+            <TextBlock x:Name="titleBlock" FontSize="22" Margin="10,0,0,0">Add a item</TextBlock>
             <Viewbox Grid.Row="1" x:Name="PicViewBox" Width="200" Height="200">
                 <Image x:Name="ImageBox" Source="Assets/Square150x150Logo.scale-200.png"
                    HorizontalAlignment="Center" 

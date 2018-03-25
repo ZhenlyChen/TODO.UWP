@@ -46,7 +46,7 @@ namespace MyList {
         
 
         private void ListClcik(object sender, ItemClickEventArgs e) {
-            if (ItemSelected != -1 && toDoList.SelectedIndex == ItemSelected) {
+            if (ItemSelected != -1 && toDoList.SelectedIndex == MainPage.Current.ListItemsData.TodoLists.IndexOf((TodoList)e.ClickedItem)) {
                 GotoDetail();
             }
         }
@@ -65,6 +65,13 @@ namespace MyList {
                 NewPage.Current.ShowDetail(toDoList.SelectedIndex);
             } else {
                 NewPage.Current.IsCreateStatus = true;
+            }
+        }
+
+        private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
+            TodoList data = (TodoList)args.SwipeControl.DataContext;
+            if (data != null) {
+                MainPage.Current.ListItemsData.TodoLists.RemoveAt(MainPage.Current.ListItemsData.TodoLists.IndexOf(data));
             }
         }
     }

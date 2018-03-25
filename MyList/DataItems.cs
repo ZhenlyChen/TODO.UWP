@@ -40,8 +40,9 @@ namespace MyList {
             this.done = false;
             this.deleteLine = Visibility.Collapsed;
             this.dueDate = DateTime.Now;
-            this.icon = new BitmapImage();
-            this.icon.UriSource = new Uri("ms-appx:/Assets/Square150x150Logo.scale-200.png");
+            this.icon = new BitmapImage {
+                UriSource = new Uri("ms-appx:/Assets/Square150x150Logo.scale-200.png")
+            };
         }
 
         public BitmapImage Icon {

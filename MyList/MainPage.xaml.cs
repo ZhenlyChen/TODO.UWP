@@ -48,8 +48,9 @@ namespace MyList {
                 GoBackPage();
             };
             SetRightAuto();
-            ImageBrush imageBrush = new ImageBrush();
-            imageBrush.ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background.jpg", UriKind.Absolute));
+            ImageBrush imageBrush = new ImageBrush {
+                ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background0.jpg", UriKind.Absolute))
+            };
             MainPageGrid.Background = imageBrush;
         }
 
@@ -106,18 +107,11 @@ namespace MyList {
             }
         }
 
-        private void Background_Click_1(object sender, RoutedEventArgs e) {
-            ImageBrush imageBrush = new ImageBrush();
-            imageBrush.ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background.jpg", UriKind.Absolute));
-            MainPageGrid.Background = imageBrush;
-        }
-        private void Background_Click_2(object sender, RoutedEventArgs e) {
-            ImageBrush imageBrush = new ImageBrush();
-            imageBrush.ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background2.jpg", UriKind.Absolute));
-            MainPageGrid.Background = imageBrush;
-        }
-        private void Background_Click_3(object sender, RoutedEventArgs e) {
-            ImageBrush imageBrush = new ImageBrush();
+        private void ChangeBackground(object sender, SelectionChangedEventArgs e) {
+            ImageBrush imageBrush = new ImageBrush {
+                ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background" +
+                BackgroundList.SelectedIndex.ToString() + ".jpg", UriKind.Absolute))
+            };
             MainPageGrid.Background = imageBrush;
         }
     }

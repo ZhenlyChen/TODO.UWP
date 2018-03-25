@@ -6,7 +6,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" FontFamily="Segoe UI">
-
+    <Page.Resources>
+        <SymbolIconSource x:Key="DeleteIcon" Symbol="Delete"/>
+        <SymbolIconSource x:Key="PinIcon" Symbol="Pin"/>
+    </Page.Resources>
     <Grid x:Name="ListPageGrid" Background="{ThemeResource SystemControlChromeHighAcrylicElementMediumBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -20,7 +23,7 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="SetVisibility.Visibility" 
-                                                Value="Visible"/>
+                                Value="Visible"/>
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState>
@@ -29,53 +32,75 @@
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
                         <Setter Target="SetVisibility.Visibility" 
-                                                Value="Collapsed"/>
+                                Value="Collapsed"/>
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
         <TextBlock FontSize="22" 
-                   Margin="35,10,0,0" FontFamily="Segoe UI" 
+                   Margin="35,10,0,0" 
+                   FontFamily="Segoe UI" 
                    Text="Todo List"/>
-        <TextBlock x:Name="SetVisibility" Visibility="Collapsed"/>
-        <ListView x:Name="toDoList" HorizontalAlignment="Stretch" 
+        <TextBlock x:Name="SetVisibility" 
+                   Visibility="Collapsed"/>
+        <ListView x:Name="toDoList" 
+                  HorizontalAlignment="Stretch" 
                   ItemsSource="{x:Bind ViewModel.TodoLists}"
-                  Margin="25,25,25,0" FontFamily="Segoe UI" 
+                  Margin="25,25,25,0" 
+                  FontFamily="Segoe UI" 
                   IsItemClickEnabled="True" 
                   SelectionChanged="ListSelect"
-                  ItemClick="ListClcik" Grid.Row="1">
+                  ItemClick="ListClcik" 
+                  Grid.Row="1">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" 
+                            Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:TodoList" 
                               x:Name="toDoListItem">
-                    <RelativePanel Height="80">
-                        <CheckBox x:Name="checkBoxItem"
-                                  IsChecked="{Binding Done, Mode=TwoWay}"
-                                  MaxWidth="30" MinWidth="1" 
-                                  Margin="0,5,0,0"
-                                  VerticalAlignment="Center"
-                                  RelativePanel.AlignVerticalCenterWithPanel="True"/>
-                        <Image x:Name="ItemImage"
-                               Source="Assets/Square150x150Logo.scale-200.png"
-                               RelativePanel.RightOf="checkBoxItem"
-                               RelativePanel.AlignVerticalCenterWith="checkBoxItem"
-                               Width="40" Height="40"
-                               Visibility="{Binding Path=Visibility, ElementName=SetVisibility}" 
+                    <SwipeControl>
+                        <SwipeControl.RightItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItem Text="Delete" 
+                                           IconSource="{StaticResource DeleteIcon}"
+                                           Background="{ThemeResource SystemControlAccentAcrylicWindowAccentMediumHighBrush}"
+                                           Invoked="DeleteItem_ItemInvoked"/>
+                            </SwipeItems>
+                        </SwipeControl.RightItems>
+                        <RelativePanel Height="80">
+                            <CheckBox x:Name="checkBoxItem"
+                                      IsChecked="{x:Bind Done, Mode=TwoWay}"
+                                      MaxWidth="30" MinWidth="1" 
+                                      Margin="0,5,0,0"
+                                      VerticalAlignment="Center"
+                                      RelativePanel.AlignVerticalCenterWithPanel="True"/>
+                            <Image x:Name="ItemImage"
+                                   Source="{Binding Icon}"
+                                   RelativePanel.RightOf="checkBoxItem"
+                                   RelativePanel.AlignVerticalCenterWith="checkBoxItem"
+                                   Width="40" Height="40"
+                                   Visibility="{Binding Path=Visibility, ElementName=SetVisibility}" 
+                                   Margin="20,0,20,0" 
                                />
-                        <Canvas Height="40"
-                                RelativePanel.RightOf="ItemImage" 
-                                RelativePanel.AlignVerticalCenterWith="ItemImage"
-                                VerticalAlignment="Center">
-                            <TextBlock Text="{Binding Title}"
-                                       Margin="0,10,0,0"
+                            <TextBlock RelativePanel.RightOf="ItemImage" 
+                                       RelativePanel.AlignVerticalCenterWith="ItemImage"
+                                       Text="{Binding Title}"
                                        HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"/>
-                            <Line X2="500" Y1="22" Y2="22"
-                                  Stroke="Black" StrokeThickness="2" 
+                                       VerticalAlignment="Center" 
+                                       Margin="10,0,0,0"/>
+                            <Line X1="1"
+                                  RelativePanel.RightOf="ItemImage" 
+                                  RelativePanel.AlignVerticalCenterWith="ItemImage"
+                                  Stroke="Black" 
+                                  StrokeThickness="2" 
                                   Visibility="{Binding DeleteLine}" 
                                   Stretch="Fill" 
                                   VerticalAlignment="Center"/>
-                        </Canvas>
-                    </RelativePanel>
+                        </RelativePanel>
+                    </SwipeControl>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
