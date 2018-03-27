@@ -44,7 +44,6 @@ namespace MyList {
             }
         }
         
-
         private void ListClcik(object sender, ItemClickEventArgs e) {
             if (ItemSelected != -1 && toDoList.SelectedIndex == MainPage.Current.ListItemsData.TodoLists.IndexOf((TodoList)e.ClickedItem)) {
                 GotoDetail();

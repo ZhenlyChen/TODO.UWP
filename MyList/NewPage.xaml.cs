@@ -49,10 +49,11 @@ namespace MyList {
         }
 
         public void ShowDetail(int index) {
-            ImageBox.Source = MainPage.Current.ListItemsData.TodoLists[index].Icon;
-            textBoxTitle.Text = MainPage.Current.ListItemsData.TodoLists[index].Title;
-            textBoxDes.Text = MainPage.Current.ListItemsData.TodoLists[index].Des;
-            DueDatePicker.Date = MainPage.Current.ListItemsData.TodoLists[index].DueDate;
+            TodoList data = MainPage.Current.ListItemsData.TodoLists[index];
+            ImageBox.Source = data.Icon;
+            textBoxTitle.Text = data.Title;
+            textBoxDes.Text = data.Des;
+            DueDatePicker.Date = data.DueDate;
         }
 
         public void ResetForm() {
@@ -106,6 +107,15 @@ namespace MyList {
             }
         }
 
+        private TodoList getCurrentData() {
+            return new TodoList() {
+                Title = textBoxTitle.Text,
+                Des = textBoxDes.Text,
+                DueDate = DueDatePicker.Date,
+                Icon = (BitmapImage)ImageBox.Source
+            };
+        }
+
         private void Create(object sender, RoutedEventArgs e) {
             if (textBoxTitle.Text == "" || textBoxDes.Text == "") {
                 SendADialog("Create Fail", "Title and Description can not be empty!");
@@ -114,19 +124,11 @@ namespace MyList {
             } else {
                 if (this.isCreateStatus == true) {
                     SendAToast("Create Success", "You had create a event successfully.");
-                    MainPage.Current.ListItemsData.TodoLists.Add(new TodoList() {
-                        Title = textBoxTitle.Text,
-                        Des = textBoxDes.Text,
-                        DueDate = DueDatePicker.Date,
-                        Icon = (BitmapImage)ImageBox.Source
-                    });
+                    MainPage.Current.ListItemsData.AddItem(getCurrentData());
                     ResetForm();
                 } else if (ListPage.Current.ItemSelected != -1) {
                     SendAToast("Update Success", "You had update a event successfully.");
-                    MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].Title = textBoxTitle.Text;
-                    MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].Des = textBoxDes.Text;
-                    MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].DueDate = DueDatePicker.Date;
-                    MainPage.Current.ListItemsData.TodoLists[ListPage.Current.ItemSelected].Icon = (BitmapImage)ImageBox.Source;
+                    MainPage.Current.ListItemsData.UpdateItem(getCurrentData(), ListPage.Current.ItemSelected);
                 } else {
                     SendADialog("Update Failed!", "You have to select one.");
                 }

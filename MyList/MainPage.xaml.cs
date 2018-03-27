@@ -48,6 +48,8 @@ namespace MyList {
                 GoBackPage();
             };
             SetRightAuto();
+
+            // SetBackground
             ImageBrush imageBrush = new ImageBrush {
                 ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background0.jpg", UriKind.Absolute))
             };
@@ -80,12 +82,6 @@ namespace MyList {
 
         public void GoToNewPage() {
             if (IsSmallScreen()) {
-                //ConnectedAnimationService.GetForCurrentView().PrepareToAnimate("image", ListFrame);
-                //ConnectedAnimation imageAnimation =
-                //    ConnectedAnimationService.GetForCurrentView().GetAnimation("image");
-                //if (imageAnimation != null) {
-                //    imageAnimation.TryStart(NewFrame);
-                //}
                 ListFrame.Visibility = Visibility.Collapsed;
                 NewFrame.Visibility = Visibility.Visible;
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
@@ -102,8 +98,8 @@ namespace MyList {
 
         private void Button_DeleteItem(object sender, RoutedEventArgs e) {
             if (ListPage.Current.ItemSelected != -1) {
-                ListItemsData.TodoLists.RemoveAt(ListPage.Current.ItemSelected);
-                MainPage.Current.GoBackPage();
+                ListItemsData.RemoveItem(ListPage.Current.ItemSelected);
+                GoBackPage();
             }
         }
 

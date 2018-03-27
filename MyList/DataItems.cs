@@ -9,20 +9,20 @@ namespace MyList {
     public class DataItems {
         private ObservableCollection<TodoList> todoLists = new ObservableCollection<TodoList>();
         public ObservableCollection<TodoList> TodoLists { get { return this.todoLists; } }
+        public void AddItem(TodoList newItem) {
+            this.todoLists.Add(newItem);
+        }
+        public bool UpdateItem(TodoList item, int index) {
+            if (index < 0 || index >= this.todoLists.Count) return false;
+            this.todoLists[index] = item;
+            return true;
+        }
+        public bool RemoveItem(int index) {
+            if (index < 0 || index >= this.todoLists.Count) return false;
+            this.todoLists.RemoveAt(index);
+            return true;
+        }
         public DataItems() {
-            this.todoLists.Add(new TodoList() {
-                Title = "Item 1",
-                Done = true,
-                DueDate = DateTime.Now,
-                Des = "This is a item."
-            });
-            this.todoLists.Add(new TodoList() {
-                Title = "Item 2",
-                Done = false,
-                DueDate = DateTime.Now,
-                Des = "This is a item."
-            });
-
         }
     }
 
