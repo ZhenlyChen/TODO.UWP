@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Notifications;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.QueryStringDotNET;
+using MyList.Data;
 
 namespace MyList {
     /// <summary>
@@ -49,7 +50,7 @@ namespace MyList {
         }
 
         public void ShowDetail(int index) {
-            TodoList data = MainPage.Current.ListItemsData.TodoLists[index];
+            Item data = ItemsDataSource.Get(index);
             ImageBox.Source = data.Icon;
             textBoxTitle.Text = data.Title;
             textBoxDes.Text = data.Des;
@@ -107,8 +108,8 @@ namespace MyList {
             }
         }
 
-        private TodoList getCurrentData() {
-            return new TodoList() {
+        private Item GetCurrentData() {
+            return new Item() {
                 Title = textBoxTitle.Text,
                 Des = textBoxDes.Text,
                 DueDate = DueDatePicker.Date,
@@ -124,11 +125,11 @@ namespace MyList {
             } else {
                 if (this.isCreateStatus == true) {
                     SendAToast("Create Success", "You had create a event successfully.");
-                    MainPage.Current.ListItemsData.AddItem(getCurrentData());
+                    ItemsDataSource.Add(GetCurrentData());
                     ResetForm();
                 } else if (ListPage.Current.ItemSelected != -1) {
                     SendAToast("Update Success", "You had update a event successfully.");
-                    MainPage.Current.ListItemsData.UpdateItem(getCurrentData(), ListPage.Current.ItemSelected);
+                    ItemsDataSource.Update(GetCurrentData(), ListPage.Current.ItemSelected);
                 } else {
                     SendADialog("Update Failed!", "You have to select one.");
                 }
@@ -145,7 +146,7 @@ namespace MyList {
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
-            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+            StorageFile file = await picker.PickSingleFileAsync();
             if (file != null) {
                 BitmapImage bitmap = new BitmapImage();
                 using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite)) {

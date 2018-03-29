@@ -18,6 +18,7 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Core;
+using MyList.Data;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace MyList {
@@ -26,10 +27,8 @@ namespace MyList {
     /// </summary>
     public sealed partial class MainPage : Page {
         public static MainPage Current;
-        public DataItems ListItemsData { get; set; }
         public MainPage() {
             this.InitializeComponent();
-            ListItemsData = new DataItems();
             Current = this;
             ListFrame.Navigate(typeof(ListPage));
             NewFrame.Navigate(typeof(NewPage));
@@ -98,7 +97,7 @@ namespace MyList {
 
         private void Button_DeleteItem(object sender, RoutedEventArgs e) {
             if (ListPage.Current.ItemSelected != -1) {
-                ListItemsData.RemoveItem(ListPage.Current.ItemSelected);
+                Data.ItemsDataSource.Remove(ListPage.Current.ItemSelected);
                 GoBackPage();
             }
         }

@@ -19,6 +19,7 @@ using System.ComponentModel;
 using Windows.UI.Core;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media.Imaging;
+using MyList.Data;
 
 namespace MyList {
     /// <summary>
@@ -28,11 +29,11 @@ namespace MyList {
         public static ListPage Current;
         public ListPage() {
             this.InitializeComponent();
-            this.ViewModel = MainPage.Current.ListItemsData;
             this.ItemSelected = -1;
             Current = this;
+            // test code
+            ItemsDataSource.Add(new Item());
         }
-        private DataItems ViewModel { get; set; }
         private int itemSelected;
         public int ItemSelected {
             get {
@@ -43,17 +44,20 @@ namespace MyList {
                 toDoList.SelectedIndex = value;
             }
         }
-        
+
         private void ListClcik(object sender, ItemClickEventArgs e) {
-            if (ItemSelected != -1 && toDoList.SelectedIndex == MainPage.Current.ListItemsData.TodoLists.IndexOf((TodoList)e.ClickedItem)) {
-                GotoDetail();
-            }
+            int index = ItemsDataSource.GetIndex(e.ClickedItem as Item);
+            toDoList.SelectedIndex = index;
+            GotoDetail();
+            //if (ItemSelected != -1 && toDoList.SelectedIndex == ItemsDataSource.GetAll().IndexOf((Item)e.ClickedItem)) {
+            //    GotoDetail();
+            //}
         }
 
         private void ListSelect(object sender, SelectionChangedEventArgs e) {
-            GotoDetail();
+            //GotoDetail();
         }
-        
+
         private void GotoDetail() {
             if (Window.Current.Bounds.Width <= 800) {
                 MainPage.Current.GoToNewPage();
@@ -68,9 +72,9 @@ namespace MyList {
         }
 
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
-            TodoList data = (TodoList)args.SwipeControl.DataContext;
+            Item data = (Item)args.SwipeControl.DataContext;
             if (data != null) {
-                MainPage.Current.ListItemsData.TodoLists.RemoveAt(MainPage.Current.ListItemsData.TodoLists.IndexOf(data));
+                ItemsDataSource.Remove(data);
             }
         }
     }
