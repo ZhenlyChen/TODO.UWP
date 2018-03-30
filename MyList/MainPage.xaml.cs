@@ -18,7 +18,7 @@ using System.Runtime.CompilerServices;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Core;
-using MyList.Data;
+using MyList.Model;
 using Windows.UI.Xaml.Media.Animation;
 
 namespace MyList {
@@ -53,6 +53,32 @@ namespace MyList {
                 ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background0.jpg", UriKind.Absolute))
             };
             MainPageGrid.Background = imageBrush;
+
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e) {
+            base.OnNavigatedTo(e);
+
+            //Get Data
+            using (var db = new DataModel.DataContext()) {
+                db.Items.Add(new DataModel.ListItem {
+                    Title = "Item X",
+                    Des = "Items",
+                    DueDate = new DateTimeOffset(),
+                    IsCheck = false
+                });
+                db.SaveChanges();
+                List<DataModel.ListItem> items = db.Items.ToList();
+                foreach (DataModel.ListItem item in items) {
+                    ItemsDataSource.GetData().Source.Add(new Item {
+                        Title = item.Title,
+                        Des = item.Des,
+                        DueDate = item.DueDate,
+                        IsCheck = item.IsCheck
+                    });
+                }
+            }
+
         }
 
         private bool IsSmallScreen() {
@@ -97,7 +123,7 @@ namespace MyList {
 
         private void Button_DeleteItem(object sender, RoutedEventArgs e) {
             if (ListPage.Current.ItemSelected != -1) {
-                Data.ItemsDataSource.Remove(ListPage.Current.ItemSelected);
+                ItemsDataSource.GetData().Remove(ListPage.Current.ItemSelected);
                 GoBackPage();
             }
         }

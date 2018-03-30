@@ -16,8 +16,9 @@ namespace DataModel.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Des = table.Column<string>(nullable: true),
                     DueDate = table.Column<DateTimeOffset>(nullable: false),
+                    Icon = table.Column<string>(nullable: true),
                     IsCheck = table.Column<bool>(nullable: false),
-                    Title = table.Column<string>(nullable: true)
+                    Title = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {

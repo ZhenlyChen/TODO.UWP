@@ -19,7 +19,7 @@ using System.ComponentModel;
 using Windows.UI.Core;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media.Imaging;
-using MyList.Data;
+using MyList.Model;
 
 namespace MyList {
     /// <summary>
@@ -32,7 +32,8 @@ namespace MyList {
             this.ItemSelected = -1;
             Current = this;
             // test code
-            ItemsDataSource.Add(new Item());
+            
+            ItemsDataSource.GetData().Add(new Item());
         }
         private int itemSelected;
         public int ItemSelected {
@@ -46,7 +47,7 @@ namespace MyList {
         }
 
         private void ListClick(object sender, ItemClickEventArgs e) {
-            int index = ItemsDataSource.GetIndex(e.ClickedItem as Item);
+            int index = ItemsDataSource.GetData().GetIndex(e.ClickedItem as Item);
             toDoList.SelectedIndex = index;
             GotoDetail();
         }
@@ -67,7 +68,7 @@ namespace MyList {
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
             Item data = (Item)args.SwipeControl.DataContext;
             if (data != null) {
-                ItemsDataSource.Remove(data);
+                ItemsDataSource.GetData().Remove(data);
             }
         }
     }

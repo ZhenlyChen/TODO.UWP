@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MyList"
-    xmlns:data="using:MyList.Data"
+    xmlns:model="using:MyList.Model"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" FontFamily="Segoe UI">
@@ -11,7 +11,7 @@
     <Page.Resources>
         <SymbolIconSource x:Key="DeleteIcon" Symbol="Delete"/>
         <SymbolIconSource x:Key="PinIcon" Symbol="Pin"/>
-        <data:CheckBoxToVisibilityConverter x:Key="VisibilityConverter"/>
+        <model:CheckBoxToVisibilityConverter x:Key="VisibilityConverter"/>
     </Page.Resources>
     
 
@@ -49,7 +49,7 @@
                    Text="Todo List"/>
         <ListView x:Name="toDoList"
                   HorizontalAlignment="Stretch"
-                  ItemsSource="{x:Bind data:ItemsDataSource.Source}"
+                  ItemsSource="{x:Bind model:ItemsDataSource.ViewModel()}"
                   Margin="25,25,25,0"
                   FontFamily="Segoe UI"
                   IsItemClickEnabled="True"
@@ -62,7 +62,7 @@
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
-                <DataTemplate x:DataType="data:Item">
+                <DataTemplate x:DataType="model:Item">
                     <SwipeControl>
                         <SwipeControl.RightItems>
                             <SwipeItems Mode="Execute">

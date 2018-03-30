@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 using Windows.UI.Notifications;
 using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.QueryStringDotNET;
-using MyList.Data;
+using MyList.Model;
 
 namespace MyList {
     /// <summary>
@@ -50,7 +50,7 @@ namespace MyList {
         }
 
         public void ShowDetail(int index) {
-            Item data = ItemsDataSource.Get(index);
+            Item data = ItemsDataSource.GetData().Get(index);
             ImageBox.Source = data.Icon;
             textBoxTitle.Text = data.Title;
             textBoxDes.Text = data.Des;
@@ -125,11 +125,11 @@ namespace MyList {
             } else {
                 if (this.isCreateStatus == true) {
                     SendAToast("Create Success", "You had create a event successfully.");
-                    ItemsDataSource.Add(GetCurrentData());
+                    ItemsDataSource.GetData().Add(GetCurrentData());
                     ResetForm();
                 } else if (ListPage.Current.ItemSelected != -1) {
                     SendAToast("Update Success", "You had update a event successfully.");
-                    ItemsDataSource.Update(GetCurrentData(), ListPage.Current.ItemSelected);
+                    ItemsDataSource.GetData().Update(GetCurrentData(), ListPage.Current.ItemSelected);
                 } else {
                     SendADialog("Update Failed!", "You have to select one.");
                 }

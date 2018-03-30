@@ -6,40 +6,53 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace MyList.Data {
+namespace MyList.Model {
     public class ItemsDataSource {
-        public static ObservableCollection<Item> GetAll() {
+        private static ItemsDataSource data;
+
+        public static ItemsDataSource GetData() {
+            if (data == null) {
+                data = new ItemsDataSource();
+            }
+            return data;
+        }
+
+        public static ObservableCollection<Item> ViewModel() {
+            return GetData().Source;
+        }
+        
+        public ObservableCollection<Item> GetSource() {
             return Source;
         }
 
-        public static ObservableCollection<Item> Source { get; } = new ObservableCollection<Item>();
+        public ObservableCollection<Item> Source { get; } = new ObservableCollection<Item>();
 
-        public static Item Get(int index) {
+        public Item Get(int index) {
             if (index < 0 || index >= Source.Count) return null;
             return Source[index];
         }
 
-        public static int GetIndex(Item item) {
+        public int GetIndex(Item item) {
             return Source.IndexOf(item);
         }
 
-        public static void Add(Item newItem) {
+        public void Add(Item newItem) {
             Source.Add(newItem);
         }
 
-        public static bool Update(Item item, int index) {
+        public bool Update(Item item, int index) {
             if (index < 0 || index >= Source.Count) return false;
             Source[index] = item;
             return true;
         }
 
-        public static bool Remove(int index) {
+        public bool Remove(int index) {
             if (index < 0 || index >= Source.Count) return false;
             Source.RemoveAt(index);
             return true;
         }
 
-        public static bool Remove(Item item) {
+        public bool Remove(Item item) {
             Source.Remove(item);
             return true;
         }

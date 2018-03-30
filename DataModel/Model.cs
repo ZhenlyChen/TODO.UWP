@@ -3,12 +3,12 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-namespace MyList.DataModel
+namespace DataModel
 {
     public class DataContext : DbContext {
         public DbSet<ListItem> Items { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
-            optionsBuilder.UseSqlite("Data Source=list.db");
+            optionsBuilder.UseSqlite("Data Source=mylist.db");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
             base.OnModelCreating(modelBuilder);
@@ -25,6 +25,6 @@ namespace MyList.DataModel
         public string Des { get; set; }
         public Boolean IsCheck { get; set; }
         public DateTimeOffset DueDate { get; set; }
-        // public BitmapImage Icon { get; set; }
+        public string Icon { get; set; }
     }
 }
