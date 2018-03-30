@@ -8,12 +8,14 @@ using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Microsoft.EntityFrameworkCore;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -31,6 +33,11 @@ namespace MyList {
         public App() {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+
+            using (var db = new DataModel.DataContext()) {
+                db.Database.Migrate();
+            }
+
         }
 
         /// <summary>
@@ -49,6 +56,9 @@ namespace MyList {
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated) {
                     //TODO: 从之前挂起的应用程序加载状态
+                    if (ApplicationData.Current.LocalSettings.Values.ContainsKey("NavigationState")) {
+                        rootFrame.SetNavigationState((string)ApplicationData.Current.LocalSettings.Values["NavigationState"]);
+                    }
                 }
 
                 // 将框架放在当前窗口中
@@ -91,6 +101,8 @@ namespace MyList {
         private void OnSuspending(object sender, SuspendingEventArgs e) {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: 保存应用程序状态并停止任何后台活动
+            Frame frame = Window.Current.Content as Frame;
+            ApplicationData.Current.LocalSettings.Values["NavigationState"] = frame.GetNavigationState();
             deferral.Complete();
         }
     }

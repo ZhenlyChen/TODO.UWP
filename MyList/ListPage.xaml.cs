@@ -45,17 +45,10 @@ namespace MyList {
             }
         }
 
-        private void ListClcik(object sender, ItemClickEventArgs e) {
+        private void ListClick(object sender, ItemClickEventArgs e) {
             int index = ItemsDataSource.GetIndex(e.ClickedItem as Item);
             toDoList.SelectedIndex = index;
             GotoDetail();
-            //if (ItemSelected != -1 && toDoList.SelectedIndex == ItemsDataSource.GetAll().IndexOf((Item)e.ClickedItem)) {
-            //    GotoDetail();
-            //}
-        }
-
-        private void ListSelect(object sender, SelectionChangedEventArgs e) {
-            //GotoDetail();
         }
 
         private void GotoDetail() {
