@@ -19,7 +19,6 @@ using System.ComponentModel;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Core;
 using MyList.Model;
-using Windows.UI.Xaml.Media.Animation;
 
 namespace MyList {
     /// <summary>
@@ -27,7 +26,13 @@ namespace MyList {
     /// </summary>
     public sealed partial class MainPage : Page {
         public static MainPage Current;
+        public bool DoneView;
+        public Visibility ListVisibility {
+            get { return ListFrame.Visibility; }
+            set { ListFrame.Visibility = value; }
+        }
         public MainPage() {
+            DoneView = false;
             this.InitializeComponent();
             Current = this;
             ListFrame.Navigate(typeof(ListPage));
@@ -58,27 +63,28 @@ namespace MyList {
 
         protected override void OnNavigatedTo(NavigationEventArgs e) {
             base.OnNavigatedTo(e);
+            if (e.NavigationMode == NavigationMode.Back) {
+                using (var db = new DataModel.DataContext()) {
+                    var tempItem = db.State.FirstOrDefault();
+                    if (tempItem != null) {
+                        //if (DoneView) {
+                            // TODO 异步BUG 在页面渲染完成之后才执行。
+                            NewPage.Current.Restore(tempItem);
+                        //} else {
 
-            //Get Data
-            using (var db = new DataModel.DataContext()) {
-                db.Items.Add(new DataModel.ListItem {
-                    Title = "Item X",
-                    Des = "Items",
-                    DueDate = new DateTimeOffset(),
-                    IsCheck = false
-                });
-                db.SaveChanges();
-                List<DataModel.ListItem> items = db.Items.ToList();
-                foreach (DataModel.ListItem item in items) {
-                    ItemsDataSource.GetData().Source.Add(new Item {
-                        Title = item.Title,
-                        Des = item.Des,
-                        DueDate = item.DueDate,
-                        IsCheck = item.IsCheck
-                    });
+                        //}
+                    } else {
+                        NewPage.Current.SetDetail(-1);
+                    }
                 }
+            } else {
+                NewPage.Current.SetDetail(-1);
             }
-
+        }
+        
+        protected override void OnNavigatedFrom(NavigationEventArgs e) {
+            base.OnNavigatedFrom(e);
+            NewPage.Current.SaveStatus();
         }
 
         private bool IsSmallScreen() {
@@ -104,7 +110,7 @@ namespace MyList {
                 NewFrame.Visibility = Visibility.Collapsed;
             }
         }
-
+        
         public void GoToNewPage() {
             if (IsSmallScreen()) {
                 ListFrame.Visibility = Visibility.Collapsed;
@@ -113,19 +119,18 @@ namespace MyList {
                     AppViewBackButtonVisibility.Visible;
                 SetLeftAuto();
             }
+            NewPage.Current.SetDetail(-1);
         }
 
         private void Button_GotoNewPage(object sender, RoutedEventArgs e) {
-            NewPage.Current.IsCreateStatus = true;
             ListPage.Current.ItemSelected = -1;
             GoToNewPage();
         }
 
         private void Button_DeleteItem(object sender, RoutedEventArgs e) {
-            if (ListPage.Current.ItemSelected != -1) {
                 ItemsDataSource.GetData().Remove(ListPage.Current.ItemSelected);
+                ListPage.Current.ItemSelected = -1;
                 GoBackPage();
-            }
         }
 
         private void ChangeBackground(object sender, SelectionChangedEventArgs e) {

@@ -29,19 +29,14 @@ namespace MyList {
         public static ListPage Current;
         public ListPage() {
             this.InitializeComponent();
-            this.ItemSelected = -1;
             Current = this;
-            // test code
-            
-            ItemsDataSource.GetData().Add(new Item());
         }
-        private int itemSelected;
         public int ItemSelected {
             get {
-                return this.itemSelected;
+                return toDoList.SelectedIndex;
             }
             set {
-                itemSelected = value;
+                NewPage.Current.SetDetail(-1);
                 toDoList.SelectedIndex = value;
             }
         }
@@ -56,13 +51,7 @@ namespace MyList {
             if (Window.Current.Bounds.Width <= 800) {
                 MainPage.Current.GoToNewPage();
             }
-            ItemSelected = toDoList.SelectedIndex;
-            if (ItemSelected != -1) {
-                NewPage.Current.IsCreateStatus = false;
-                NewPage.Current.ShowDetail(toDoList.SelectedIndex);
-            } else {
-                NewPage.Current.IsCreateStatus = true;
-            }
+            NewPage.Current.SetDetail(ItemSelected);
         }
 
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {

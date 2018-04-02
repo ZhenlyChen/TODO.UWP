@@ -121,6 +121,7 @@
     <Content Include="Assets\Background0.jpg" />
     <Content Include="Assets\Background1.jpg" />
     <Content Include="Assets\Background2.jpg" />
+    <Content Include="Assets\itemIcon.jpg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

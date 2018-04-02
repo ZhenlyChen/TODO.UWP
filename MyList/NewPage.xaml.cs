@@ -25,13 +25,9 @@ namespace MyList {
     /// </summary>
     public sealed partial class NewPage : Page {
         public static NewPage Current;
-        public NewPage() {
-            this.InitializeComponent();
-            Current = this;
-            this.IsCreateStatus = true;
-        }
         private Boolean isCreateStatus;
-        
+        private byte[] imageByte;
+        private int editIndex;
         public Boolean IsCreateStatus {
             get {
                 return this.isCreateStatus;
@@ -49,8 +45,67 @@ namespace MyList {
             }
         }
 
-        public void ShowDetail(int index) {
-            Item data = ItemsDataSource.GetData().Get(index);
+        public NewPage() {
+            this.InitializeComponent();
+            Current = this;
+            this.IsCreateStatus = true;
+            imageByte = null;
+        }
+
+        public void SaveStatus() {
+            var currentData = GetCurrentData();
+            using (var db = new DataModel.DataContext()) {
+                var tempItem = db.State.FirstOrDefault();
+                if (tempItem != null) {
+                    tempItem.Title = currentData.Title;
+                    tempItem.Des = currentData.Des;
+                    tempItem.DueDate = currentData.DueDate;
+                    tempItem.Icon = currentData.ImageByte;
+                    tempItem.ListIndex = editIndex;
+                } else {
+                    db.State.Add(new DataModel.TempState() {
+                        Title = currentData.Title,
+                        Des = currentData.Des,
+                        DueDate = currentData.DueDate,
+                        Icon = currentData.ImageByte,
+                        ListIndex = editIndex
+                    });
+                }
+                db.SaveChanges();
+            }
+        }
+
+        public async void Restore(DataModel.TempState data) {
+            // 异步操作，有点困难。需要在数据库读取之后并且列表生成之后执行。
+            // SetDetail(data.ListIndex);
+            if (data.ListIndex == -1) { // 暂时只恢复新建时候的状态，更新时候的状态以后再做
+                editIndex = data.ListIndex;
+                IsCreateStatus = true;
+                ResetForm();
+                ImageBox.Source = await Model.UtilTool.ConvertByteToImage(data.Icon);
+                textBoxTitle.Text = data.Title;
+                textBoxDes.Text = data.Des;
+                DueDatePicker.Date = data.DueDate;
+            } else {
+                // IsCreateStatus = false;
+                // ShowDetail();
+            }
+            // ListPage.Current.ItemSelected = data.ListIndex;
+        }
+
+        public void SetDetail(int index) {
+            editIndex = index;
+            if (index == -1) {
+                IsCreateStatus = true;
+                ResetForm();
+            } else {
+                IsCreateStatus = false;
+                ShowDetail();
+            }
+        }
+
+        public void ShowDetail() {
+            Item data = ItemsDataSource.GetData().Get(editIndex);
             ImageBox.Source = data.Icon;
             textBoxTitle.Text = data.Title;
             textBoxDes.Text = data.Des;
@@ -61,10 +116,10 @@ namespace MyList {
             textBoxTitle.Text = "";
             textBoxDes.Text = "";
             DueDatePicker.Date = DateTime.Now;
-            BitmapImage Icon = new BitmapImage {
-                UriSource = new Uri("ms-appx:/Assets/Square150x150Logo.scale-200.png")
+            ImageBox.Source = new BitmapImage {
+                UriSource = new Uri("ms-appx:///Assets/itemIcon.jpg")
             };
-            ImageBox.Source = Icon;
+            imageByte = null;
         }
 
         private void SendAToast(string title, string content) {
@@ -103,8 +158,8 @@ namespace MyList {
         private void ClearText(object sender, RoutedEventArgs e) {
             if (this.IsCreateStatus == true) {
                 ResetForm();
-            } else if (ListPage.Current.ItemSelected != -1) {
-                ShowDetail(ListPage.Current.ItemSelected);
+            } else if (editIndex != -1) {
+                ShowDetail();
             }
         }
 
@@ -113,7 +168,8 @@ namespace MyList {
                 Title = textBoxTitle.Text,
                 Des = textBoxDes.Text,
                 DueDate = DueDatePicker.Date,
-                Icon = (BitmapImage)ImageBox.Source
+                Icon = (BitmapImage)ImageBox.Source,
+                ImageByte = imageByte
             };
         }
 
@@ -127,9 +183,9 @@ namespace MyList {
                     SendAToast("Create Success", "You had create a event successfully.");
                     ItemsDataSource.GetData().Add(GetCurrentData());
                     ResetForm();
-                } else if (ListPage.Current.ItemSelected != -1) {
+                } else if (editIndex != -1) {
                     SendAToast("Update Success", "You had update a event successfully.");
-                    ItemsDataSource.GetData().Update(GetCurrentData(), ListPage.Current.ItemSelected);
+                    ItemsDataSource.GetData().Update(GetCurrentData(), editIndex);
                 } else {
                     SendADialog("Update Failed!", "You have to select one.");
                 }
@@ -148,6 +204,7 @@ namespace MyList {
             picker.FileTypeFilter.Add(".png");
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null) {
+                imageByte = await Model.UtilTool.ConvertImageToByte(file);
                 BitmapImage bitmap = new BitmapImage();
                 using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite)) {
                     bitmap.SetSource(stream);

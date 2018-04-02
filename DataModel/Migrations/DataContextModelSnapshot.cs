@@ -28,7 +28,7 @@ namespace DataModel.Migrations
 
                     b.Property<DateTimeOffset>("DueDate");
 
-                    b.Property<string>("Icon");
+                    b.Property<byte[]>("Icon");
 
                     b.Property<bool>("IsCheck");
 
@@ -38,6 +38,26 @@ namespace DataModel.Migrations
                     b.HasKey("ListId");
 
                     b.ToTable("Items");
+                });
+
+            modelBuilder.Entity("DataModel.TempState", b =>
+                {
+                    b.Property<int>("ListId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Des");
+
+                    b.Property<DateTimeOffset>("DueDate");
+
+                    b.Property<byte[]>("Icon");
+
+                    b.Property<int>("ListIndex");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("ListId");
+
+                    b.ToTable("State");
                 });
 #pragma warning restore 612, 618
         }

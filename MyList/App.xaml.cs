@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System.Collections.ObjectModel;
 
 namespace MyList {
     /// <summary>
@@ -37,7 +38,7 @@ namespace MyList {
             using (var db = new DataModel.DataContext()) {
                 db.Database.Migrate();
             }
-
+             Model.ItemsDataSource.GetData().InitFromDB();
         }
 
         /// <summary>
@@ -59,6 +60,13 @@ namespace MyList {
                     if (ApplicationData.Current.LocalSettings.Values.ContainsKey("NavigationState")) {
                         rootFrame.SetNavigationState((string)ApplicationData.Current.LocalSettings.Values["NavigationState"]);
                     }
+                    //if (ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsWidth")) {
+                    //    ApplicationView.PreferredLaunchViewSize.Width = (double)ApplicationData.Current.LocalSettings.Values["WindowsWidth"];
+                    //}
+                    //if (ApplicationData.Current.LocalSettings.Values.ContainsKey("PageState")) {
+                    //    var pageState = (String)ApplicationData.Current.LocalSettings.Values["PageState"];
+                    //    MainPage.Current.ListVisibility = pageState == "Visibility" ? Visibility.Visible : Visibility.Collapsed;
+                    //}
                 }
 
                 // 将框架放在当前窗口中
@@ -103,6 +111,9 @@ namespace MyList {
             //TODO: 保存应用程序状态并停止任何后台活动
             Frame frame = Window.Current.Content as Frame;
             ApplicationData.Current.LocalSettings.Values["NavigationState"] = frame.GetNavigationState();
+            //ApplicationData.Current.LocalSettings.Values["WindowsWidth"] = frame.ActualWidth;
+            //ApplicationData.Current.LocalSettings.Values["PageState"] = MainPage.Current.ListVisibility.ToString();
+
             deferral.Complete();
         }
     }

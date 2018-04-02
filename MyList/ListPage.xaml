@@ -12,6 +12,7 @@
         <SymbolIconSource x:Key="DeleteIcon" Symbol="Delete"/>
         <SymbolIconSource x:Key="PinIcon" Symbol="Pin"/>
         <model:CheckBoxToVisibilityConverter x:Key="VisibilityConverter"/>
+
     </Page.Resources>
     
 
