@@ -59,7 +59,7 @@
                   FontFamily="Segoe UI"
                   IsItemClickEnabled="True"
                   ItemClick="ListClick"
-                  Grid.Row="2">
+                  Grid.Row="1">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment"
