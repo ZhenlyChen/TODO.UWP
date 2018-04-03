@@ -199,29 +199,6 @@ namespace MyList.Model {
         }
     }
 
-    public class UtilTool {
-        public static async Task<BitmapImage> ConvertByteToImage(byte[] imageBytes) {
-            if (imageBytes != null) {
-                MemoryStream stream = new MemoryStream(imageBytes);
-                var randomAccessStream = new MemoryRandomAccessStream(stream);
-                BitmapImage bitmapImage = new BitmapImage();
-                await bitmapImage.SetSourceAsync(randomAccessStream);
-                return bitmapImage;
-            } else {
-                return Item.DefaultIcon;
-            }
-        }
-
-        public static async Task<byte[]> ConvertImageToByte(StorageFile file) {
-            using (var inputStream = await file.OpenSequentialReadAsync()) {
-                var readStream = inputStream.AsStreamForRead();
-                var byteArray = new byte[readStream.Length];
-                await readStream.ReadAsync(byteArray, 0, byteArray.Length);
-                return byteArray;
-            }
-        }
-    }
-
     public class CheckBoxToVisibilityConverter : IValueConverter {
         public object Convert(object value, Type targetType,
             object parameter, string language) {

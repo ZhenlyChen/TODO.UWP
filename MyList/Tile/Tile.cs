@@ -16,7 +16,7 @@ namespace MyList.Tile
         }
 
         public static void AddTile(string title, string des, DateTimeOffset date) {
-            String strDate = date.ToString("M");
+            String strDate = date.ToString("D");
             // Load the string into an XmlDocument
             XmlDocument document = new XmlDocument();
             document.LoadXml(System.IO.File.ReadAllText("Tile/Tile.xml"));

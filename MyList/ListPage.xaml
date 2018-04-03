@@ -48,6 +48,10 @@
         <TextBlock FontSize="22" 
                    Margin="20,10,0,0"
                    Text="Todo List"/>
+        <StackPanel Grid.Row="0">
+            <AutoSuggestBox PlaceholderText="Search" QueryIcon="Find" Width="300"
+                HorizontalAlignment="Right" Margin="0,10,30,0" QuerySubmitted="QueryItem"/>    
+        </StackPanel>
         <ListView x:Name="toDoList"
                   HorizontalAlignment="Stretch"
                   ItemsSource="{x:Bind model:ItemsDataSource.ViewModel()}"
@@ -55,7 +59,7 @@
                   FontFamily="Segoe UI"
                   IsItemClickEnabled="True"
                   ItemClick="ListClick"
-                  Grid.Row="1">
+                  Grid.Row="2">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment"

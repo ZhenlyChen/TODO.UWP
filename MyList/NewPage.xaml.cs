@@ -82,7 +82,7 @@ namespace MyList {
                 editIndex = data.ListIndex;
                 IsCreateStatus = true;
                 ResetForm();
-                ImageBox.Source = await Model.UtilTool.ConvertByteToImage(data.Icon);
+                ImageBox.Source = await UtilTool.ConvertByteToImage(data.Icon);
                 textBoxTitle.Text = data.Title;
                 textBoxDes.Text = data.Des;
                 DueDatePicker.Date = data.DueDate;
@@ -143,16 +143,6 @@ namespace MyList {
             ToastNotificationManager.CreateToastNotifier().Show(new ToastNotification(toastContent.GetXml()));
         }
 
-        private async void SendADialog(string title, string content) {
-            ContentDialog failDialog = new ContentDialog {
-                PrimaryButtonText = "OK",
-                DefaultButton = ContentDialogButton.Primary,
-                Title = title,
-                Content = content
-            };
-            ContentDialogResult result = await failDialog.ShowAsync();
-        }
-
         private void ClearText(object sender, RoutedEventArgs e) {
             if (this.IsCreateStatus == true) {
                 ResetForm();
@@ -173,9 +163,9 @@ namespace MyList {
 
         private void Create(object sender, RoutedEventArgs e) {
             if (textBoxTitle.Text == "" || textBoxDes.Text == "") {
-                SendADialog("Create Fail", "Title and Description can not be empty!");
+                UtilTool.SendADialog("Create Fail", "Title and Description can not be empty!");
             } else if (DueDatePicker.Date < DateTime.Now.AddDays(-1)) {
-                SendADialog("Create Fail", "DueDate is late to Now!");
+                UtilTool.SendADialog("Create Fail", "DueDate is late to Now!");
             } else {
                 if (this.isCreateStatus == true) {
                     SendAToast("Create Success", "You had create a event successfully.");
@@ -185,7 +175,7 @@ namespace MyList {
                     SendAToast("Update Success", "You had update a event successfully.");
                     ItemsDataSource.GetData().Update(GetCurrentData(), editIndex);
                 } else {
-                    SendADialog("Update Failed!", "You have to select one.");
+                    UtilTool.SendADialog("Update Failed!", "You have to select one.");
                 }
                 MainPage.Current.GoBackPage();
             }

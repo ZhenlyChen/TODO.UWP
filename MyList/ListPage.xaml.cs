@@ -109,6 +109,21 @@ namespace MyList {
             request.Data.SetBitmap(bitmap);
             request.Data.SetText(currentItem.Des + "\n" +currentItem.DueDate.ToString("M"));
         }
+
+        private void QueryItem(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) {
+            var text = args.QueryText;
+            using (var db = new DataModel.DataContext()) {
+                var items = db.Items.Where(b => b.Title.Contains(text) || 
+                                                b.Des.Contains(text) || 
+                                                b.DueDate.ToString("D").Contains(text))
+                                          .ToList();
+                string content = "";
+                foreach(var item in items) {
+                    content += $"{item.Title} {item.Des} {item.DueDate.ToString("D")}\n";
+                }
+                UtilTool.SendADialog("Search Result", content);
+            }
+        }
     }
 
 }

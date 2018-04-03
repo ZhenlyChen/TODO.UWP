@@ -57,11 +57,14 @@
                     Grid.Row="5"
                     VerticalAlignment="Top" 
                     MaxWidth="Infinity" />
+
             <Button Style="{StaticResource ButtonRevealStyle}" 
                 x:Name="buttonCreate" Content="Create" 
                 Grid.Row="6"
                 VerticalAlignment="Top" 
-                Height="35" Width="98" Click="Create"/>
+                Height="35" Width="98" Click="Create">
+            </Button>
+
             <Button Style="{StaticResource ButtonRevealStyle}" 
                 x:Name="buttonCancel" Content="Cancel" 
                 HorizontalAlignment="Right" 
