@@ -9,7 +9,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Windows;
@@ -19,7 +18,11 @@ using System.ComponentModel;
 using Windows.UI.Core;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Input;
 using MyList.Model;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
+using System.Threading.Tasks;
 
 namespace MyList {
     /// <summary>
@@ -36,14 +39,14 @@ namespace MyList {
                 return toDoList.SelectedIndex;
             }
             set {
-                NewPage.Current.SetDetail(-1);
+                NewPage.Current.SetDetail(value);
                 toDoList.SelectedIndex = value;
             }
         }
 
         private void ListClick(object sender, ItemClickEventArgs e) {
             int index = ItemsDataSource.GetData().GetIndex(e.ClickedItem as Item);
-            toDoList.SelectedIndex = index;
+            ItemSelected = index;
             GotoDetail();
         }
 
@@ -51,7 +54,7 @@ namespace MyList {
             if (Window.Current.Bounds.Width <= 800) {
                 MainPage.Current.GoToNewPage();
             }
-            NewPage.Current.SetDetail(ItemSelected);
+            // NewPage.Current.SetDetail(ItemSelected);
         }
 
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
@@ -59,6 +62,52 @@ namespace MyList {
             if (data != null) {
                 ItemsDataSource.GetData().Remove(data);
             }
+        }
+
+        private void MenuEdit_Click(object sender, RoutedEventArgs e) {
+            var originalSource = e.OriginalSource as MenuFlyoutItem;
+            int index = ItemsDataSource.GetData().GetIndex(originalSource.DataContext as Item);
+            ItemSelected = index;
+            GotoDetail();
+        }
+
+        private void MenuDelete_Click(object sender, RoutedEventArgs e) {
+            var originalSource = e.OriginalSource as MenuFlyoutItem;
+            Item data = (Item)originalSource.DataContext;
+            if (data != null) {
+                ItemsDataSource.GetData().Remove(data);
+            }
+        }
+        private Item currentItem;
+
+        private void MenuShare_Click(object sender, RoutedEventArgs e) {
+            DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
+            var originalSource = e.OriginalSource as MenuFlyoutItem;
+            Item data = (Item)originalSource.DataContext;
+            currentItem = data;
+            dataTransferManager.DataRequested += DataRequested;
+            DataTransferManager.ShowShareUI();
+        }
+
+        internal static async Task<InMemoryRandomAccessStream> ConvertTo(byte[] arr) {
+            InMemoryRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
+            await randomAccessStream.WriteAsync(arr.AsBuffer());
+            randomAccessStream.Seek(0); 
+            return randomAccessStream;
+        }
+
+        private async void DataRequested(DataTransferManager sender, DataRequestedEventArgs e) {
+            DataRequest request = e.Request;
+            request.Data.Properties.Title = currentItem.Title;
+            RandomAccessStreamReference bitmap;
+            if (currentItem.ImageByte != null) {
+                InMemoryRandomAccessStream stream = await ConvertTo(currentItem.ImageByte);
+                bitmap = RandomAccessStreamReference.CreateFromStream(stream);
+            } else {
+                bitmap = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/orange.png"));
+            }
+            request.Data.SetBitmap(bitmap);
+            request.Data.SetText(currentItem.Des + "\n" +currentItem.DueDate.ToString("M"));
         }
     }
 

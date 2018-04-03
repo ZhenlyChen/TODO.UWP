@@ -21,8 +21,8 @@
                 <RowDefinition Height="40"/>
             </Grid.RowDefinitions>
             <TextBlock x:Name="titleBlock" FontSize="22" Margin="10,0,0,0">Add a item</TextBlock>
-            <Viewbox Grid.Row="1" x:Name="PicViewBox" Width="200" Height="200">
-                <Image x:Name="ImageBox" Source="Assets/Square150x150Logo.scale-200.png"
+            <Viewbox Grid.Row="1" x:Name="PicViewBox" Width="160" Height="160">
+                <Image x:Name="ImageBox" Source="Assets/orange.png"
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"/>
             </Viewbox>
@@ -31,7 +31,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Slider Grid.Column="0" ValueChanged="Slider_Change" Minimum="100" Maximum="200" Value="200" VerticalAlignment="Center"/>
+                <Slider Grid.Column="0" ValueChanged="Slider_Change" Minimum="100" Maximum="200" Value="160" VerticalAlignment="Center"/>
                 <AppBarButton Grid.Column="1" Icon="Pictures" 
                           Label="Select" Click="SelectPic_Click" HorizontalAlignment="Right"/>
             </Grid>

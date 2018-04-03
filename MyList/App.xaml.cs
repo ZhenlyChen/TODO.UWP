@@ -39,6 +39,8 @@ namespace MyList {
                 db.Database.Migrate();
             }
              Model.ItemsDataSource.GetData().InitFromDB();
+
+            Tile.TileManger.InitTile();
         }
 
         /// <summary>

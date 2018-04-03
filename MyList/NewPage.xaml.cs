@@ -116,9 +116,7 @@ namespace MyList {
             textBoxTitle.Text = "";
             textBoxDes.Text = "";
             DueDatePicker.Date = DateTime.Now;
-            ImageBox.Source = new BitmapImage {
-                UriSource = new Uri("ms-appx:///Assets/itemIcon.jpg")
-            };
+            ImageBox.Source = Item.DefaultIcon;
             imageByte = null;
         }
 
@@ -204,7 +202,7 @@ namespace MyList {
             picker.FileTypeFilter.Add(".png");
             StorageFile file = await picker.PickSingleFileAsync();
             if (file != null) {
-                imageByte = await Model.UtilTool.ConvertImageToByte(file);
+                imageByte = await UtilTool.ConvertImageToByte(file);
                 BitmapImage bitmap = new BitmapImage();
                 using (var stream = await file.OpenAsync(FileAccessMode.ReadWrite)) {
                     bitmap.SetSource(stream);

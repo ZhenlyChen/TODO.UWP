@@ -33,7 +33,7 @@ namespace MyList {
         }
         public MainPage() {
             DoneView = false;
-            this.InitializeComponent();
+            InitializeComponent();
             Current = this;
             ListFrame.Navigate(typeof(ListPage));
             NewFrame.Navigate(typeof(NewPage));
@@ -55,7 +55,7 @@ namespace MyList {
 
             // SetBackground
             ImageBrush imageBrush = new ImageBrush {
-                ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background0.jpg", UriKind.Absolute))
+                ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/Background1.jpg", UriKind.Absolute))
             };
             MainPageGrid.Background = imageBrush;
 
@@ -64,21 +64,16 @@ namespace MyList {
         protected override void OnNavigatedTo(NavigationEventArgs e) {
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.Back) {
-                using (var db = new DataModel.DataContext()) {
-                    var tempItem = db.State.FirstOrDefault();
-                    if (tempItem != null) {
-                        //if (DoneView) {
-                            // TODO 异步BUG 在页面渲染完成之后才执行。
-                            NewPage.Current.Restore(tempItem);
-                        //} else {
+                RestoreData();
+            }
+        }
 
-                        //}
-                    } else {
-                        NewPage.Current.SetDetail(-1);
-                    }
+        public void RestoreData() {
+            using (var db = new DataModel.DataContext()) {
+                var tempItem = db.State.FirstOrDefault();
+                if (tempItem != null) {
+                    NewPage.Current.Restore(tempItem);
                 }
-            } else {
-                NewPage.Current.SetDetail(-1);
             }
         }
         

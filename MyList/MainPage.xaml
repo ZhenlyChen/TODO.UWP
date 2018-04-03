@@ -44,7 +44,7 @@
                ScrollViewer.VerticalScrollBarVisibility="Auto" />
     </Grid>
     <Page.BottomAppBar>
-        <CommandBar  RequestedTheme="Light">
+        <CommandBar RequestedTheme="Default">
             <AppBarButton Style="{ThemeResource AppBarButtonRevealStyle}" Icon="Add" Label="Create" 
                           Click="Button_GotoNewPage"/>
             <AppBarButton Style="{ThemeResource AppBarButtonRevealStyle}" Icon="Delete" Label="Delete" 
@@ -53,7 +53,7 @@
             <AppBarButton Style="{ThemeResource AppBarButtonRevealStyle}" Icon="Pictures" IsCompact="True" Label="Background">
                 <AppBarButton.Flyout>
                     <Flyout>
-                        <ListView  Background="{ThemeResource SystemControlChromeHighAcrylicElementMediumBrush}" x:Name="BackgroundList" SelectedIndex="0" SelectionChanged="ChangeBackground">
+                        <ListView  Background="{ThemeResource SystemControlChromeHighAcrylicElementMediumBrush}" x:Name="BackgroundList" SelectedIndex="1" SelectionChanged="ChangeBackground">
                             <Image Source="Assets/Background0.jpg"
                                    HorizontalAlignment="Center" 
                                    VerticalAlignment="Center" 

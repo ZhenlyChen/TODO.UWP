@@ -51,6 +51,7 @@ namespace MyList.Model {
 
         public void Add(Item newItem) {
             Source.Add(newItem);
+            Tile.TileManger.AddTile(newItem.Title, newItem.Des, newItem.DueDate);
             using (var db = new DataModel.DataContext()) {
                 db.Add(newItem.ToModel());
                 db.SaveChanges();
@@ -66,6 +67,7 @@ namespace MyList.Model {
                 item.Update(newDate);
                 db.SaveChanges();
             }
+            Tile.TileManger.Update(Source);
             return true;
         }
 
@@ -77,6 +79,7 @@ namespace MyList.Model {
                 db.SaveChanges();
             }
             Source.RemoveAt(index);
+            Tile.TileManger.Update(Source);
             return true;
         }
 
@@ -88,13 +91,16 @@ namespace MyList.Model {
             using (var db = new DataModel.DataContext()) {
                 var items = db.Items.ToList();
                 foreach (var item in items) {
-                    Source.Add(await new Item().FromModel(item));
+                    Item newItem = await new Item().FromModel(item);
+                    Source.Add(newItem);
+                    Tile.TileManger.AddTile(newItem.Title, newItem.Des, newItem.DueDate);
                 }
             }
         }
     }
 
     public class Item : BindableBase {
+        public static BitmapImage DefaultIcon = new BitmapImage(new Uri("ms-appx:///Assets/orange.png"));
         private DataModel.ListItem data;
         private string title;
         private string des;
@@ -151,7 +157,7 @@ namespace MyList.Model {
                 isCheck = data.IsCheck;
                 dueDate = data.DueDate;
                 if (data.Icon == null) {
-                    icon = new BitmapImage(new Uri("ms-appx:///Assets/itemIcon.jpg"));
+                    icon = DefaultIcon;
                 } else {
                     imageByte = data.Icon;
                     icon = await UtilTool.ConvertByteToImage(imageByte);
@@ -202,7 +208,7 @@ namespace MyList.Model {
                 await bitmapImage.SetSourceAsync(randomAccessStream);
                 return bitmapImage;
             } else {
-                return new BitmapImage(new Uri("ms-appx:///Assets/itemIcon.jpg"));
+                return Item.DefaultIcon;
             }
         }
 
