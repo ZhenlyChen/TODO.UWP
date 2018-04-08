@@ -11,7 +11,7 @@
       <image placement="background" src="Assets/trianglify.png" />
       <group>
         <subgroup hint-weight="33">
-          <image src="Assets/orange.png" />
+          <image name="icon" src="Assets/orange.png" />
         </subgroup>
         <subgroup>
           <text hint-style="title">title</text>
@@ -26,7 +26,7 @@
       <group>
         <subgroup hint-weight="1"/>
         <subgroup hint-weight="2">
-          <image src="Assets/orange.png" hint-crop="circle"/>
+          <image name="icon" src="Assets/orange.png" hint-crop="circle"/>
         </subgroup>
         <subgroup hint-weight="1"/>
       </group>

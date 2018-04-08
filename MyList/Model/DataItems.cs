@@ -12,6 +12,7 @@ using System.IO;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Text;
 
 namespace MyList.Model {
 
@@ -108,6 +109,7 @@ namespace MyList.Model {
         private DateTimeOffset dueDate;
         private BitmapImage icon;
         private byte[] imageByte;
+        private FontWeight fontWeight;
 
         public async void InitItem() {
             data = new DataModel.ListItem {
@@ -121,6 +123,7 @@ namespace MyList.Model {
         }
 
         public Item() {
+            fontWeight = FontWeights.Normal;
             InitItem();
         }
 
@@ -189,6 +192,10 @@ namespace MyList.Model {
             get { return this.des; }
             set { SetProperty(ref this.des, value); }
         }
+        public FontWeight Font {
+            get { return this.fontWeight; }
+            set { SetProperty(ref this.fontWeight, value); }
+        }
         public DateTimeOffset DueDate {
             get { return this.dueDate; }
             set { SetProperty(ref this.dueDate, value); }
@@ -212,7 +219,6 @@ namespace MyList.Model {
             throw new NotImplementedException();
         }
     }
-
 
     public abstract class BindableBase : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;

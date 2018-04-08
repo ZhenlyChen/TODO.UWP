@@ -23,6 +23,7 @@ using MyList.Model;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
+using Windows.UI.Text;
 
 namespace MyList {
     /// <summary>
@@ -92,7 +93,7 @@ namespace MyList {
         internal static async Task<InMemoryRandomAccessStream> ConvertTo(byte[] arr) {
             InMemoryRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
             await randomAccessStream.WriteAsync(arr.AsBuffer());
-            randomAccessStream.Seek(0); 
+            randomAccessStream.Seek(0);
             return randomAccessStream;
         }
 
@@ -107,21 +108,42 @@ namespace MyList {
                 bitmap = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/orange.png"));
             }
             request.Data.SetBitmap(bitmap);
-            request.Data.SetText(currentItem.Des + "\n" +currentItem.DueDate.ToString("M"));
+            request.Data.SetText(currentItem.Des + "\n" + currentItem.DueDate.ToString("M"));
         }
 
         private void QueryItem(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) {
             var text = args.QueryText;
+            searchBox.Text = "";
             using (var db = new DataModel.DataContext()) {
-                var items = db.Items.Where(b => b.Title.Contains(text) || 
-                                                b.Des.Contains(text) || 
+                var items = db.Items.Where(b => b.Title.Contains(text) ||
+                                                b.Des.Contains(text) ||
                                                 b.DueDate.ToString("D").Contains(text))
                                           .ToList();
                 string content = "";
-                foreach(var item in items) {
+                foreach (var item in items) {
                     content += $"{item.Title} {item.Des} {item.DueDate.ToString("D")}\n";
                 }
+                if (content.Equals("")) {
+                    content = "No Result";
+                }
                 UtilTool.SendADialog("Search Result", content);
+            }
+        }
+
+        private void TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args) {
+            var text = sender.Text;
+            foreach (var item in ItemsDataSource.GetData().Source) {
+                if (text.Equals("")) {
+                    item.Font = FontWeights.Normal;
+                    continue;
+                }
+                if (item.Title.Contains(text) ||
+                    item.Des.Contains(text) ||
+                    item.DueDate.ToString("D").Contains(text)) {
+                    item.Font = FontWeights.Bold;
+                } else {
+                    item.Font = FontWeights.Normal;
+                }
             }
         }
     }
