@@ -1,2 +1,1 @@
-MainPackage=D:\Coding\UWP\Course\MyList\MyList\bin\x64\Debug\MyList_1.0.1.0_x64_Debug.appx
-SymbolPackage=D:\Coding\UWP\Course\MyList\MyList\AppPackages\MyList_1.0.1.0_Debug_Test\MyList_1.0.1.0_x64_Debug.appxsym
+MainPackage=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.9.0_x64.appx

@@ -47,6 +47,7 @@ namespace MyList {
 
         public NewPage() {
             this.InitializeComponent();
+            editIndex = -1;
             Current = this;
             this.IsCreateStatus = true;
             imageByte = null;

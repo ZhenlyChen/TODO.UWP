@@ -55,7 +55,7 @@ namespace MyList {
             if (Window.Current.Bounds.Width <= 800) {
                 MainPage.Current.GoToNewPage();
             }
-            // NewPage.Current.SetDetail(ItemSelected);
+            NewPage.Current.SetDetail(ItemSelected);
         }
 
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
@@ -100,6 +100,7 @@ namespace MyList {
         private async void DataRequested(DataTransferManager sender, DataRequestedEventArgs e) {
             DataRequest request = e.Request;
             request.Data.Properties.Title = currentItem.Title;
+            request.Data.Properties.Description = "Share your todo item";
             RandomAccessStreamReference bitmap;
             if (currentItem.ImageByte != null) {
                 InMemoryRandomAccessStream stream = await ConvertTo(currentItem.ImageByte);
@@ -108,7 +109,7 @@ namespace MyList {
                 bitmap = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/orange.png"));
             }
             request.Data.SetBitmap(bitmap);
-            request.Data.SetText(currentItem.Des + "\n" + currentItem.DueDate.ToString("M"));
+            request.Data.SetText(currentItem.Des + "\n" + currentItem.DueDate.ToString("D"));
         }
 
         private void QueryItem(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) {

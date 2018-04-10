@@ -31,6 +31,7 @@ namespace MyList {
         /// 初始化单一实例应用程序对象。这是执行的创作代码的第一行，
         /// 已执行，逻辑上等同于 main() 或 WinMain()。
         /// </summary>
+        public bool isSuspend = false;
         public App() {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
@@ -59,12 +60,17 @@ namespace MyList {
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated) {
                     //TODO: 从之前挂起的应用程序加载状态
+                    isSuspend = true;
                     if (ApplicationData.Current.LocalSettings.Values.ContainsKey("NavigationState")) {
                         rootFrame.SetNavigationState((string)ApplicationData.Current.LocalSettings.Values["NavigationState"]);
                     }
-                    //if (ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsWidth")) {
-                    //    ApplicationView.PreferredLaunchViewSize.Width = (double)ApplicationData.Current.LocalSettings.Values["WindowsWidth"];
-                    //}
+                    if (ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsWidth") &&
+                        ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsHeight")) {
+                        var width = (double)ApplicationData.Current.LocalSettings.Values["WindowsWidth"];
+                        var height = (double)ApplicationData.Current.LocalSettings.Values["WindowsHeight"];
+                        ApplicationView.PreferredLaunchViewSize = new Size(width, height);
+                        ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+                    }
                     //if (ApplicationData.Current.LocalSettings.Values.ContainsKey("PageState")) {
                     //    var pageState = (String)ApplicationData.Current.LocalSettings.Values["PageState"];
                     //    MainPage.Current.ListVisibility = pageState == "Visibility" ? Visibility.Visible : Visibility.Collapsed;
@@ -113,7 +119,10 @@ namespace MyList {
             //TODO: 保存应用程序状态并停止任何后台活动
             Frame frame = Window.Current.Content as Frame;
             ApplicationData.Current.LocalSettings.Values["NavigationState"] = frame.GetNavigationState();
-            //ApplicationData.Current.LocalSettings.Values["WindowsWidth"] = frame.ActualWidth;
+            ApplicationData.Current.LocalSettings.Values["WindowsWidth"] = Window.Current.Bounds.Width;
+            ApplicationData.Current.LocalSettings.Values["WindowsHeight"] = Window.Current.Bounds.Height;
+            ApplicationData.Current.LocalSettings.Values["AddNewItem"] = MainPage.Current.ListVisibility == Visibility.Visible ? false : true;
+
             //ApplicationData.Current.LocalSettings.Values["PageState"] = MainPage.Current.ListVisibility.ToString();
 
             deferral.Complete();

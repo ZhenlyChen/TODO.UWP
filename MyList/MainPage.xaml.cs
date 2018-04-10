@@ -19,6 +19,7 @@ using System.ComponentModel;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Core;
 using MyList.Model;
+using Windows.Storage;
 
 namespace MyList {
     /// <summary>
@@ -59,6 +60,18 @@ namespace MyList {
             };
             MainPageGrid.Background = imageBrush;
 
+            if (((App)App.Current).isSuspend) {
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("AddNewItem")) {
+                    var state = (bool)ApplicationData.Current.LocalSettings.Values["AddNewItem"];
+                    if (state) {
+                        ListFrame.Visibility = Visibility.Collapsed;
+                        NewFrame.Visibility = Visibility.Visible;
+                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                            AppViewBackButtonVisibility.Visible;
+                        SetLeftAuto();
+                    }
+                }
+            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e) {
@@ -104,6 +117,7 @@ namespace MyList {
             if (IsSmallScreen()) {
                 NewFrame.Visibility = Visibility.Collapsed;
             }
+            NewPage.Current.ResetForm();
         }
         
         public void GoToNewPage() {

@@ -61,7 +61,9 @@ namespace MyList.Model {
 
         public bool Update(Item newItem, int index) {
             if (index < 0 || index >= Source.Count) return false;
+            bool state = Source[index].IsCheck;
             Source[index] = Source[index].GetNewItem(newItem);
+            Source[index].IsCheck = state;
             var newDate = Source[index].ToModel();
             using (var db = new DataModel.DataContext()) {
                 var item = db.Items.Single(b => b.ListId == newDate.ListId);
@@ -135,6 +137,7 @@ namespace MyList.Model {
             Icon = newData.icon;
             ImageByte = newData.imageByte;
             return this;
+            
         }
 
         public DataModel.ListItem ToModel() {
