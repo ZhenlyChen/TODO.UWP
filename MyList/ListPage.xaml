@@ -70,6 +70,8 @@
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment"
                             Value="Stretch"/>
+                    <Setter Property="MinHeight" Value="0" />
+                    <Setter Property="Padding" Value="30,0,30,0" />
                 </Style>
             </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
@@ -83,7 +85,7 @@
                                            Invoked="DeleteItem_ItemInvoked"/>
                             </SwipeItems>
                         </SwipeControl.RightItems>
-                        <RelativePanel Height="80">
+                        <RelativePanel Height="80" Visibility="{Binding ShowIt}">
                             <CheckBox x:Name="checkBoxItem"
                                       IsChecked="{x:Bind IsCheck, Mode=TwoWay}"
                                       MaxWidth="30" MinWidth="1"
@@ -102,7 +104,7 @@
                                        Text="{x:Bind Title}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center" 
-                                       Margin="10,0,0,0" FontWeight="{Binding Font}"
+                                       Margin="10,0,0,0"
                                        />
                             <Line X1="1"
                                   RelativePanel.RightOf="ItemImage" 

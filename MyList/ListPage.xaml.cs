@@ -53,9 +53,8 @@ namespace MyList {
 
         private void GotoDetail() {
             if (Window.Current.Bounds.Width <= 800) {
-                MainPage.Current.GoToNewPage();
+                MainPage.Current.State = "Detail";
             }
-            NewPage.Current.SetDetail(ItemSelected);
         }
 
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
@@ -79,39 +78,30 @@ namespace MyList {
                 ItemsDataSource.GetData().Remove(data);
             }
         }
-        private Item currentItem;
 
+        // 分享模块
         private void MenuShare_Click(object sender, RoutedEventArgs e) {
             DataTransferManager dataTransferManager = DataTransferManager.GetForCurrentView();
             var originalSource = e.OriginalSource as MenuFlyoutItem;
             Item data = (Item)originalSource.DataContext;
-            currentItem = data;
-            dataTransferManager.DataRequested += DataRequested;
+            dataTransferManager.DataRequested += async (s, args) => {
+                DataRequest request = args.Request;
+                request.Data.Properties.Title = data.Title;
+                request.Data.Properties.Description = "Share your todo item";
+                RandomAccessStreamReference bitmap;
+                if (data.ImageByte != null) {
+                    InMemoryRandomAccessStream stream = await UtilTool.ConvertByteToStream(data.ImageByte);
+                    bitmap = RandomAccessStreamReference.CreateFromStream(stream);
+                } else {
+                    bitmap = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/orange.png"));
+                }
+                request.Data.SetBitmap(bitmap);
+                request.Data.SetText(data.Des + "\n" + data.DueDate.ToString("D"));
+            };
             DataTransferManager.ShowShareUI();
         }
 
-        internal static async Task<InMemoryRandomAccessStream> ConvertTo(byte[] arr) {
-            InMemoryRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
-            await randomAccessStream.WriteAsync(arr.AsBuffer());
-            randomAccessStream.Seek(0);
-            return randomAccessStream;
-        }
-
-        private async void DataRequested(DataTransferManager sender, DataRequestedEventArgs e) {
-            DataRequest request = e.Request;
-            request.Data.Properties.Title = currentItem.Title;
-            request.Data.Properties.Description = "Share your todo item";
-            RandomAccessStreamReference bitmap;
-            if (currentItem.ImageByte != null) {
-                InMemoryRandomAccessStream stream = await ConvertTo(currentItem.ImageByte);
-                bitmap = RandomAccessStreamReference.CreateFromStream(stream);
-            } else {
-                bitmap = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/orange.png"));
-            }
-            request.Data.SetBitmap(bitmap);
-            request.Data.SetText(currentItem.Des + "\n" + currentItem.DueDate.ToString("D"));
-        }
-
+        // 搜索模块
         private void QueryItem(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args) {
             var text = args.QueryText;
             searchBox.Text = "";
@@ -135,15 +125,15 @@ namespace MyList {
             var text = sender.Text;
             foreach (var item in ItemsDataSource.GetData().Source) {
                 if (text.Equals("")) {
-                    item.Font = FontWeights.Normal;
+                    item.ShowIt = Visibility.Visible;
                     continue;
                 }
                 if (item.Title.Contains(text) ||
                     item.Des.Contains(text) ||
                     item.DueDate.ToString("D").Contains(text)) {
-                    item.Font = FontWeights.Bold;
+                    item.ShowIt = Visibility.Visible;
                 } else {
-                    item.Font = FontWeights.Normal;
+                    item.ShowIt = Visibility.Collapsed;
                 }
             }
         }

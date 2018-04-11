@@ -1,6 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <tile>
   <visual>
+    <binding template="TileSmall" hint-textStacking="center">
+      <image placement="background" src="Assets/trianglify.png" />
+      <text hint-align="center">title</text>
+    </binding>
     <binding template="TileMedium" branding="logo">
       <image placement="background" src="Assets/trianglify.png" />
       <text hint-style="title">title</text>

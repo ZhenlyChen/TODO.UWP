@@ -27,32 +27,30 @@ namespace MyList {
     /// </summary>
     public sealed partial class MainPage : Page {
         public static MainPage Current;
-        public bool DoneView;
-        public Visibility ListVisibility {
-            get { return ListFrame.Visibility; }
-            set { ListFrame.Visibility = value; }
-        }
+
         public MainPage() {
-            DoneView = false;
+            State = "New";
             InitializeComponent();
             Current = this;
             ListFrame.Navigate(typeof(ListPage));
             NewFrame.Navigate(typeof(NewPage));
+
             this.SizeChanged += (s, e) => {
-                if (ListFrame.Visibility == Visibility.Visible) {
-                    SetRightAuto();
-                }
                 if (e.NewSize.Width > 800) {
-                    ListFrame.Visibility = Visibility.Visible;
-                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                        AppViewBackButtonVisibility.Collapsed;
-                    MainPageGrid.ColumnDefinitions[1].Width = new GridLength(400);
+                    State = "All";
+                } else {
+                    if (State != "Detail") {
+                        State = "List";
+                    }
                 }
             };
+
             SystemNavigationManager.GetForCurrentView().BackRequested += (s, e) => {
-                GoBackPage();
+                if (IsSmallScreen()) {
+                    State = "List";
+                }
+                ListPage.Current.ItemSelected = -1;
             };
-            SetRightAuto();
 
             // SetBackground
             ImageBrush imageBrush = new ImageBrush {
@@ -60,36 +58,81 @@ namespace MyList {
             };
             MainPageGrid.Background = imageBrush;
 
+            // 恢复挂起状态
             if (((App)App.Current).isSuspend) {
                 if (ApplicationData.Current.LocalSettings.Values.ContainsKey("AddNewItem")) {
-                    var state = (bool)ApplicationData.Current.LocalSettings.Values["AddNewItem"];
-                    if (state) {
-                        ListFrame.Visibility = Visibility.Collapsed;
-                        NewFrame.Visibility = Visibility.Visible;
-                        SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                            AppViewBackButtonVisibility.Visible;
-                        SetLeftAuto();
+                    var isEditState = (bool)ApplicationData.Current.LocalSettings.Values["AddNewItem"];
+                    if (isEditState) {
+                        State = "Detail";
+                    }
+                }
+            }
+
+            if (State == "New") {
+                if (IsSmallScreen()) {
+                    State = "List";
+                } else {
+                    State = "All";
+                }
+            }
+        }
+
+        // 自适应状态管理
+        private string state;
+        public string State {
+            get { return state; }
+            set {
+                ChangeState(value);
+                state = value;
+            }
+        }
+        private void ChangeState(string newState) {
+            if (newState == state) {
+                return;
+            }
+            switch (newState) {
+                case "List":
+                    ListFrame.Visibility = Visibility.Visible;
+                    NewFrame.Visibility = Visibility.Collapsed;
+                    ApplicationData.Current.LocalSettings.Values["AddNewItem"] = false;
+                    MainPageGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    MainPageGrid.ColumnDefinitions[1].Width = new GridLength(0);
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                        AppViewBackButtonVisibility.Collapsed;
+                    break;
+                case "Detail":
+                    ListFrame.Visibility = Visibility.Collapsed;
+                    NewFrame.Visibility = Visibility.Visible;
+                    MainPageGrid.ColumnDefinitions[0].Width = new GridLength(0);
+                    MainPageGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                        AppViewBackButtonVisibility.Visible;
+                    break;
+                case "All":
+                    NewFrame.Visibility = Visibility.Visible;
+                    ListFrame.Visibility = Visibility.Visible;
+                    ApplicationData.Current.LocalSettings.Values["AddNewItem"] = false;
+                    MainPageGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+                    MainPageGrid.ColumnDefinitions[1].Width = new GridLength(400);
+                    SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
+                        AppViewBackButtonVisibility.Collapsed;
+                    break;
+            }
+        }
+
+        // 状态的保存与恢复
+        protected override void OnNavigatedTo(NavigationEventArgs e) {
+            base.OnNavigatedTo(e);
+            if (e.NavigationMode == NavigationMode.Back) {
+                using (var db = new DataModel.DataContext()) {
+                    var tempItem = db.State.FirstOrDefault();
+                    if (tempItem != null) {
+                        NewPage.Current.Restore(tempItem);
                     }
                 }
             }
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e) {
-            base.OnNavigatedTo(e);
-            if (e.NavigationMode == NavigationMode.Back) {
-                RestoreData();
-            }
-        }
-
-        public void RestoreData() {
-            using (var db = new DataModel.DataContext()) {
-                var tempItem = db.State.FirstOrDefault();
-                if (tempItem != null) {
-                    NewPage.Current.Restore(tempItem);
-                }
-            }
-        }
-        
         protected override void OnNavigatedFrom(NavigationEventArgs e) {
             base.OnNavigatedFrom(e);
             NewPage.Current.SaveStatus();
@@ -99,47 +142,20 @@ namespace MyList {
             return Window.Current.Bounds.Width <= 800;
         }
 
-        private void SetLeftAuto() {
-            MainPageGrid.ColumnDefinitions[0].Width = GridLength.Auto;
-            MainPageGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
-        }
-
-        private void SetRightAuto() {
-            MainPageGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
-            MainPageGrid.ColumnDefinitions[1].Width = GridLength.Auto;
-        }
-
-        public void GoBackPage() {
-            ListFrame.Visibility = Visibility.Visible;
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                AppViewBackButtonVisibility.Collapsed;
-            SetRightAuto();
-            if (IsSmallScreen()) {
-                NewFrame.Visibility = Visibility.Collapsed;
-            }
-            NewPage.Current.ResetForm();
-        }
-        
-        public void GoToNewPage() {
-            if (IsSmallScreen()) {
-                ListFrame.Visibility = Visibility.Collapsed;
-                NewFrame.Visibility = Visibility.Visible;
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                    AppViewBackButtonVisibility.Visible;
-                SetLeftAuto();
-            }
-            NewPage.Current.SetDetail(-1);
-        }
-
         private void Button_GotoNewPage(object sender, RoutedEventArgs e) {
             ListPage.Current.ItemSelected = -1;
-            GoToNewPage();
+            if (IsSmallScreen()) {
+                State = "Detail";
+                ApplicationData.Current.LocalSettings.Values["AddNewItem"] = true;
+            }
         }
 
         private void Button_DeleteItem(object sender, RoutedEventArgs e) {
-                ItemsDataSource.GetData().Remove(ListPage.Current.ItemSelected);
-                ListPage.Current.ItemSelected = -1;
-                GoBackPage();
+            ItemsDataSource.GetData().Remove(ListPage.Current.ItemSelected);
+            ListPage.Current.ItemSelected = -1;
+            if (IsSmallScreen()) {
+                State = "List";
+            }
         }
 
         private void ChangeBackground(object sender, SelectionChangedEventArgs e) {

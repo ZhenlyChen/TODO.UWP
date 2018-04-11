@@ -3,9 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 
@@ -30,6 +32,14 @@ namespace MyList {
                 await readStream.ReadAsync(byteArray, 0, byteArray.Length);
                 return byteArray;
             }
+        }
+
+
+        public static async Task<InMemoryRandomAccessStream> ConvertByteToStream(byte[] arr) {
+            InMemoryRandomAccessStream randomAccessStream = new InMemoryRandomAccessStream();
+            await randomAccessStream.WriteAsync(arr.AsBuffer());
+            randomAccessStream.Seek(0);
+            return randomAccessStream;
         }
 
         public static async void SendADialog(string title, string content) {

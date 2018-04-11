@@ -178,7 +178,9 @@ namespace MyList {
                 } else {
                     UtilTool.SendADialog("Update Failed!", "You have to select one.");
                 }
-                MainPage.Current.GoBackPage();
+                if (MainPage.Current.State == "Detail") {
+                    MainPage.Current.State = "List";
+                }
             }
         }
 

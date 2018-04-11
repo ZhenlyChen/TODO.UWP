@@ -111,7 +111,7 @@ namespace MyList.Model {
         private DateTimeOffset dueDate;
         private BitmapImage icon;
         private byte[] imageByte;
-        private FontWeight fontWeight;
+        private Visibility showIt;
 
         public async void InitItem() {
             data = new DataModel.ListItem {
@@ -125,7 +125,7 @@ namespace MyList.Model {
         }
 
         public Item() {
-            fontWeight = FontWeights.Normal;
+            showIt = Visibility.Visible;
             InitItem();
         }
 
@@ -195,9 +195,9 @@ namespace MyList.Model {
             get { return this.des; }
             set { SetProperty(ref this.des, value); }
         }
-        public FontWeight Font {
-            get { return this.fontWeight; }
-            set { SetProperty(ref this.fontWeight, value); }
+        public Visibility ShowIt {
+            get { return this.showIt; }
+            set { SetProperty(ref this.showIt, value); }
         }
         public DateTimeOffset DueDate {
             get { return this.dueDate; }

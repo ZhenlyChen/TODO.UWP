@@ -61,9 +61,7 @@ namespace MyList {
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated) {
                     //TODO: 从之前挂起的应用程序加载状态
                     isSuspend = true;
-                    if (ApplicationData.Current.LocalSettings.Values.ContainsKey("NavigationState")) {
-                        rootFrame.SetNavigationState((string)ApplicationData.Current.LocalSettings.Values["NavigationState"]);
-                    }
+                    // 恢复窗口大小
                     if (ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsWidth") &&
                         ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsHeight")) {
                         var width = (double)ApplicationData.Current.LocalSettings.Values["WindowsWidth"];
@@ -71,10 +69,6 @@ namespace MyList {
                         ApplicationView.PreferredLaunchViewSize = new Size(width, height);
                         ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
                     }
-                    //if (ApplicationData.Current.LocalSettings.Values.ContainsKey("PageState")) {
-                    //    var pageState = (String)ApplicationData.Current.LocalSettings.Values["PageState"];
-                    //    MainPage.Current.ListVisibility = pageState == "Visibility" ? Visibility.Visible : Visibility.Collapsed;
-                    //}
                 }
 
                 // 将框架放在当前窗口中
@@ -118,12 +112,9 @@ namespace MyList {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: 保存应用程序状态并停止任何后台活动
             Frame frame = Window.Current.Content as Frame;
-            ApplicationData.Current.LocalSettings.Values["NavigationState"] = frame.GetNavigationState();
+            // 保存窗口大小
             ApplicationData.Current.LocalSettings.Values["WindowsWidth"] = Window.Current.Bounds.Width;
             ApplicationData.Current.LocalSettings.Values["WindowsHeight"] = Window.Current.Bounds.Height;
-            ApplicationData.Current.LocalSettings.Values["AddNewItem"] = MainPage.Current.ListVisibility == Visibility.Visible ? false : true;
-
-            //ApplicationData.Current.LocalSettings.Values["PageState"] = MainPage.Current.ListVisibility.ToString();
 
             deferral.Complete();
         }
