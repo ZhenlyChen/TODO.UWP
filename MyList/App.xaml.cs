@@ -61,8 +61,11 @@ namespace MyList {
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated) {
                     //TODO: 从之前挂起的应用程序加载状态
                     isSuspend = true;
-                    // 恢复窗口大小
-                    if (ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsWidth") &&
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("NavigationState")) {
+                    rootFrame.SetNavigationState((string)ApplicationData.Current.LocalSettings.Values["NavigationState"]); rootFrame.SetNavigationState((string)ApplicationData.Current.LocalSettings.Values["NavigationState"]);
+                }
+                // 恢复窗口大小
+                if (ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsWidth") &&
                         ApplicationData.Current.LocalSettings.Values.ContainsKey("WindowsHeight")) {
                         var width = (double)ApplicationData.Current.LocalSettings.Values["WindowsWidth"];
                         var height = (double)ApplicationData.Current.LocalSettings.Values["WindowsHeight"];
@@ -112,6 +115,7 @@ namespace MyList {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: 保存应用程序状态并停止任何后台活动
             Frame frame = Window.Current.Content as Frame;
+            ApplicationData.Current.LocalSettings.Values["NavigationState"] = frame.GetNavigationState();
             // 保存窗口大小
             ApplicationData.Current.LocalSettings.Values["WindowsWidth"] = Window.Current.Bounds.Width;
             ApplicationData.Current.LocalSettings.Values["WindowsHeight"] = Window.Current.Bounds.Height;

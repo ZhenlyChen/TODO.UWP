@@ -46,10 +46,10 @@ namespace MyList {
         }
 
         public NewPage() {
-            this.InitializeComponent();
+            InitializeComponent();
             editIndex = -1;
             Current = this;
-            this.IsCreateStatus = true;
+            IsCreateStatus = true;
             imageByte = null;
         }
 
@@ -88,8 +88,15 @@ namespace MyList {
                 textBoxDes.Text = data.Des;
                 DueDatePicker.Date = data.DueDate;
             } else {
-                // IsCreateStatus = false;
+                editIndex = data.ListIndex;
+                IsCreateStatus = false;
                 // ShowDetail();
+                if (data.Icon != null) {
+                    ImageBox.Source = await UtilTool.ConvertByteToImage(data.Icon);
+                }
+                textBoxTitle.Text = data.Title;
+                textBoxDes.Text = data.Des;
+                DueDatePicker.Date = data.DueDate;
             }
             // ListPage.Current.ItemSelected = data.ListIndex;
         }
@@ -111,6 +118,7 @@ namespace MyList {
             textBoxTitle.Text = data.Title;
             textBoxDes.Text = data.Des;
             DueDatePicker.Date = data.DueDate;
+            imageByte = data.ImageByte;
         }
 
         public void ResetForm() {

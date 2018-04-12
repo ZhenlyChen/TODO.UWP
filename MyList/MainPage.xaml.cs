@@ -29,7 +29,6 @@ namespace MyList {
         public static MainPage Current;
 
         public MainPage() {
-            State = "New";
             InitializeComponent();
             Current = this;
             ListFrame.Navigate(typeof(ListPage));
@@ -68,12 +67,8 @@ namespace MyList {
                 }
             }
 
-            if (State == "New") {
-                if (IsSmallScreen()) {
-                    State = "List";
-                } else {
-                    State = "All";
-                }
+            if (State != "Detail") {
+                State = "List";
             }
         }
 
@@ -88,6 +83,10 @@ namespace MyList {
         }
         private void ChangeState(string newState) {
             if (newState == state) {
+                return;
+            }
+            if (newState != "All" && !IsSmallScreen()) {
+                State = "All";
                 return;
             }
             switch (newState) {
@@ -105,6 +104,7 @@ namespace MyList {
                     NewFrame.Visibility = Visibility.Visible;
                     MainPageGrid.ColumnDefinitions[0].Width = new GridLength(0);
                     MainPageGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                    ApplicationData.Current.LocalSettings.Values["AddNewItem"] = true;
                     SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                         AppViewBackButtonVisibility.Visible;
                     break;
@@ -142,20 +142,16 @@ namespace MyList {
             return Window.Current.Bounds.Width <= 800;
         }
 
+        // 底部按钮
         private void Button_GotoNewPage(object sender, RoutedEventArgs e) {
             ListPage.Current.ItemSelected = -1;
-            if (IsSmallScreen()) {
-                State = "Detail";
-                ApplicationData.Current.LocalSettings.Values["AddNewItem"] = true;
-            }
+            State = "Detail";
         }
 
         private void Button_DeleteItem(object sender, RoutedEventArgs e) {
             ItemsDataSource.GetData().Remove(ListPage.Current.ItemSelected);
             ListPage.Current.ItemSelected = -1;
-            if (IsSmallScreen()) {
-                State = "List";
-            }
+            State = "List";
         }
 
         private void ChangeBackground(object sender, SelectionChangedEventArgs e) {

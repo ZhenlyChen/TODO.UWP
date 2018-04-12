@@ -24,6 +24,7 @@ using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using System.Threading.Tasks;
 using Windows.UI.Text;
+using Windows.Storage;
 
 namespace MyList {
     /// <summary>
@@ -48,19 +49,14 @@ namespace MyList {
         private void ListClick(object sender, ItemClickEventArgs e) {
             int index = ItemsDataSource.GetData().GetIndex(e.ClickedItem as Item);
             ItemSelected = index;
-            GotoDetail();
-        }
-
-        private void GotoDetail() {
-            if (Window.Current.Bounds.Width <= 800) {
-                MainPage.Current.State = "Detail";
-            }
+            MainPage.Current.State = "Detail";
         }
 
         private void DeleteItem_ItemInvoked(SwipeItem sender, SwipeItemInvokedEventArgs args) {
             Item data = (Item)args.SwipeControl.DataContext;
             if (data != null) {
                 ItemsDataSource.GetData().Remove(data);
+                ItemSelected = -1;
             }
         }
 
@@ -68,7 +64,7 @@ namespace MyList {
             var originalSource = e.OriginalSource as MenuFlyoutItem;
             int index = ItemsDataSource.GetData().GetIndex(originalSource.DataContext as Item);
             ItemSelected = index;
-            GotoDetail();
+            MainPage.Current.State = "Detail";
         }
 
         private void MenuDelete_Click(object sender, RoutedEventArgs e) {
@@ -76,6 +72,7 @@ namespace MyList {
             Item data = (Item)originalSource.DataContext;
             if (data != null) {
                 ItemsDataSource.GetData().Remove(data);
+                ItemSelected = -1;
             }
         }
 

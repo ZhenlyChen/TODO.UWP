@@ -23,8 +23,21 @@ namespace MyList.Tile
             int i = rd.Next(0, icons.Length - 1);
             return $"Assets/{icons[i]}.png";
         }
+        private static int count = 0;
+        private static string GetCount() {
+            count++;
+            if (count > 8) count = 0;
+            return $"icon-{count}.png";
+        }
 
-        public static void AddTile(string title, string des, DateTimeOffset date) {
+        private static async Task<StorageFile> AsStorageFile(byte[] byteArray, string fileName) {
+            StorageFolder storageFolder = ApplicationData.Current.LocalFolder;
+            StorageFile sampleFile = await storageFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+            await FileIO.WriteBytesAsync(sampleFile, byteArray);
+            return sampleFile;
+        }
+
+        public static async void AddTile(string title, string des, DateTimeOffset date, byte[] icon) {
             String strDate = date.ToString("D");
             // Load the string into an XmlDocument
             XmlDocument document = new XmlDocument();
@@ -40,10 +53,15 @@ namespace MyList.Tile
                 }
             }
             XmlNodeList imageElements = document.GetElementsByTagName("image");
+            string path = "Assets/orange.png";
+            if (icon != null) {
+                path = GetCount();
+                path = (await AsStorageFile(icon, path)).Path;
+            }
             foreach(var image in imageElements) {
                 string name = GetAttriByName(image, "name");
                 if (name != null && name.Equals("icon")) {
-                    SetAttriByName(image, "src", GetIcon());
+                    SetAttriByName(image, "src", path);
                 }
             }
 
@@ -77,7 +95,7 @@ namespace MyList.Tile
         public static void Update(ObservableCollection<Model.Item> items) {
             ClearTile();
             foreach(var item in items) {
-                AddTile(item.Title, item.Des, item.DueDate);
+                AddTile(item.Title, item.Des, item.DueDate, item.ImageByte);
             }
         }
     }

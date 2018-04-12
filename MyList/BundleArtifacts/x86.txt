@@ -1,2 +1,5 @@
-MainPackage=D:\Coding\UWP\Course\MyList\MyList\bin\x86\Debug\MyList_1.0.1.0_x86_Debug.appx
-SymbolPackage=D:\Coding\UWP\Course\MyList\MyList\AppPackages\MyList_1.0.1.0_Debug_Test\MyList_1.0.1.0_x86_Debug.appxsym
+MainPackage=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x86\Debug\MyList_1.2.19.0_x86_Debug.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x86\Debug\MyList_1.2.19.0_scale-100.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x86\Debug\MyList_1.2.19.0_scale-125.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x86\Debug\MyList_1.2.19.0_scale-150.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x86\Debug\MyList_1.2.19.0_scale-400.appx

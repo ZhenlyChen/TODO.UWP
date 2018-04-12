@@ -1,1 +1,5 @@
-MainPackage=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.9.0_x64.appx
+MainPackage=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.21.0_x64.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.21.0_scale-100.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.21.0_scale-125.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.21.0_scale-150.appx
+ResourcePack=D:\Coding\UWP\Course\TODO.UWP\MyList\bin\x64\Release\MyList_1.2.21.0_scale-400.appx

@@ -52,7 +52,7 @@ namespace MyList.Model {
 
         public void Add(Item newItem) {
             Source.Add(newItem);
-            Tile.TileManger.AddTile(newItem.Title, newItem.Des, newItem.DueDate);
+            Tile.TileManger.AddTile(newItem.Title, newItem.Des, newItem.DueDate, newItem.ImageByte);
             using (var db = new DataModel.DataContext()) {
                 db.Add(newItem.ToModel());
                 db.SaveChanges();
@@ -96,7 +96,7 @@ namespace MyList.Model {
                 foreach (var item in items) {
                     Item newItem = await new Item().FromModel(item);
                     Source.Add(newItem);
-                    Tile.TileManger.AddTile(newItem.Title, newItem.Des, newItem.DueDate);
+                    Tile.TileManger.AddTile(newItem.Title, newItem.Des, newItem.DueDate, item.Icon);
                 }
             }
         }
