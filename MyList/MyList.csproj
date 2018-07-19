@@ -22,7 +22,7 @@
     <AppxBundle>Auto</AppxBundle>
     <AppxBundlePlatforms>x64</AppxBundlePlatforms>
     <AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
-    <PackageCertificateThumbprint>7EF3A15D10E29B82DEAA61C1E0DFEDD9D00C1A98</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>13F3185C14258E2055AD435AE3E39D8DB48F2FE3</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
